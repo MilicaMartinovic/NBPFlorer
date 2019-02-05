@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/scroll_view">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="175dp"
+                android:background="@color/colorPrimary">
+            </View>
+
+            <FrameLayout
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center|top">
+
+                <ImageView
+                    android:id="@+id/img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:contentDescription="@string/ImgDesc"
+                    android:scaleType="centerCrop"/>
+                <!--   android:background="@drawable/profile_picture_border"
+                    android:src="@drawable/user_image_missing"-->
+
+                <ImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/btn_change_image"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="end|bottom"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"/>
+                <!--  android:background="@drawable/change_image_background"
+                    android:src="@mipmap/change_profile_image_icon"-->
+
+            </FrameLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lblfull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/full_name"
+                android:textColor="@color/colorTextGray"
+                android:layout_gravity="center|bottom"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="center"
+                android:id="@+id/btnEdit"
+                android:layout_gravity="end"
+                android:contentDescription="@string/ImgDesc"
+                android:background="@android:color/transparent"
+                android:layout_marginRight="3dp"/>
+            <!--      android:src="@drawable/pencil_edit_icon" -->
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lblFullName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal|bold"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center"
+                android:textSize="18sp"
+                android:layout_marginBottom="3dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/my_account_full_name_edit"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:layout_gravity="center"
+                android:textColor="@color/colorPrimary" />
+          <!--      android:theme="@style/EditTextTheme"/> -->
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/lbluser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_name"
+            android:textColor="@color/colorTextGray"
+            android:layout_gravity="center"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lblUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="normal|bold"
+                android:layout_gravity="center"
+                android:layout_marginBottom="3dp"
+                android:textSize="18sp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/my_account_user_name_edit"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:layout_gravity="center"
+                android:textColor="@color/colorPrimary" />
+            <!--    android:theme="@style/EditTextTheme"/> -->
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/lblemail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:textColor="@color/colorTextGray"
+            android:layout_gravity="center"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lblEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="normal|bold"
+                android:layout_gravity="center"
+                android:textSize="18sp"
+                android:layout_marginBottom="3dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/my_account_email_edit"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:layout_gravity="center"
+                android:textColor="@color/colorPrimary" />
+        <!--        android:theme="@style/EditTextTheme"/> -->
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/lblmotherland"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/motherland"
+            android:textColor="@color/colorTextGray"
+            android:layout_gravity="center"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lblMotherland"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="normal|bold"
+                android:layout_gravity="center"
+                android:textSize="18sp"
+                android:layout_marginBottom="3dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/my_account_motherland_edit"
+                android:textStyle="normal|bold"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:textColor="@color/colorPrimary"/>
+             <!--   android:theme="@style/EditTextTheme"/> -->
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/lblbio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bio"
+            android:textColor="@color/colorTextGray"
+            android:layout_gravity="center"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lblBio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="normal|bold"
+                android:layout_gravity="center"
+                android:textSize="18sp"
+                android:layout_marginBottom="3dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/my_account_bio_edit"
+                android:textStyle="normal|bold"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:textColor="@color/colorPrimary"/>
+       <!--         android:theme="@style/EditTextTheme"/> -->
+
+        </FrameLayout>
+
+        <!--<View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/colorPrimary"/>
+
+        <Button
+            android:id="@+id/btnViewContributions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="@string/view_my_contributions"
+            android:textColor="@color/colorPrimary" />-->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/lblMyContributions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="normal|bold"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:textSize="18sp"
+            android:text="my plants:"/>
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/my_account_tabs"
+            xmlns:card_view="http://schemas.android.com/tools">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_account"
+                android:nestedScrollingEnabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="parent"
+                app:layout_constraintRight_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                card_view:cardCornerRadius="5dp"
+                card_view:cardElevation="5dp"
+                card_view:cardUseCompatPadding="true"
+                card_view:layout_editor_absoluteY="130dp"
+                />
+
+        </android.support.design.widget.CoordinatorLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">NBP Florer</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="btnLogin">Login</string>
+    <string name="labelLoggedIn">logged in</string>
+    <string name="labelLoggedOut">logged out</string>
+    <string name="btnSlikaj">Slikaj</string>
+    <string name="btnIzaberiSliku">Izaberi sliku</string>
+
+    <string name="ImgDesc">Description</string>
+
+    <string name="user_name">user name:</string>
+    <string name="full_name">full name:</string>
+    <string name="email">email:</string>
+    <string name="motherland">motherland:</string>
+    <string name="bio">biography:</string>
+    <string name="change_image">change image...</string>
+    <string name="btnMap">Start maps</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="google_maps_API_key">AIzaSyDKzIP8-b4rVn9zsU0GSIwkgLUbEmJ3gkw</string>
+
+    <string-array name="requests">
+        <item>plant requests</item>
+        <item>account requests</item>
+    </string-array>
+
+    <string name="password_hint">password</string>
+    <string name="username_hint">user name</string>
+
+    <!-- REGISTER ACTIVITY -->
+    <string name="confpassword_hint">confirm password</string>
+    <string name="additional_hint">additional</string>
+    <string name="posaljiZahtev">send account request</string>
+    <string name="create_account">create account</string>
+
+    <!-- MAP EXPLORE ACTIVITY -->
+    <string name="enter_plant_name">enter plant name</string>
+    <string name="search_hint">enter tag</string>
+    <string name="search_title"></string>
+
+    <string name="search_plants">show plants</string>
+    <string name="search_users">show users</string>
+
+
+    <string name="add_suggestion">Add name suggestion</string>
+    <!-- MY ACCOUNT ACTIVITY -->
+    <string name="view_my_contributions">view contributions</string>
+    <string name="tags">tags:</string>
+    <string name="add_by">added by:</string>
+    <string name="show_account_requests">show account requests</string>
+    <string name="document">Document</string>
+    <string name="requested_on">requested on:</string>
+    <string name="map">map:</string>
+    <string name="additional">additional:</string>
+    <string name="approve">APPROVE</string>
+    <string name="deny">DENY</string>
+
+    <string name="login">login</string>
+    <string name="logout">logout</string>
+    <string name="my_account">my account</string>
+
+    <string name="plant_name">plant name</string>
+
+    <string name="made_by">by BiTS</string>
+</resources>

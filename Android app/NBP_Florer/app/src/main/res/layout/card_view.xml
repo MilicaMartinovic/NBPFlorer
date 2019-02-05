@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:id="@+id/card_view"
+    card_view:cardCornerRadius="10dp"
+    android:layout_marginTop="7dp"
+    android:layout_marginBottom="7dp"
+    android:layout_marginLeft="7dp"
+    android:layout_marginRight="7dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:id="@+id/card_image"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/ImgDesc"/>
+        <!--
+            android:foreground="@drawable/image_overlay" -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/plantie_icon"
+                android:contentDescription="@string/ImgDesc"
+
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="3dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="5dp" />
+            <!-- android:src="@mipmap/plant_card_view_plantie" -->
+
+            <TextView
+                android:id="@+id/plant_card_view_plant_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/plantie_icon"
+                android:layout_marginLeft="5dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="5dp"
+                android:text="Biljcus Latinus"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
+
+            <View
+                android:layout_width="match_parent"
+                android:id="@+id/linijica"
+                android:layout_height="1dp"
+                android:layout_alignBottom="@+id/plant_card_view_plant_name"
+                android:layout_toEndOf="@+id/plantie_icon"
+                android:layout_marginLeft="5dp"
+                android:background="@color/colorAccent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lbladdedby"
+                android:text="@string/add_by"
+                android:layout_alignTop="@+id/linijica"
+                android:layout_toEndOf="@+id/plantie_icon"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/colorAccent"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/plant_card_view_added_by"
+                android:textSize="12sp"
+                android:textColor="@color/colorAccent"
+                android:text="botanicar"
+                android:textStyle="bold"
+                android:layout_alignTop="@+id/linijica"
+                android:layout_toEndOf="@+id/lbladdedby"
+                android:layout_marginLeft="5dp"/>
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="208dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/plant_card_view_votes"
+                android:text="218"
+                android:textColor="@color/colorAccent"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:textSize="20sp"/>
+
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:id="@+id/plant_card_view_thumb_up"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/ImgDesc"
+                android:layout_toStartOf="@+id/plant_card_view_votes"
+                android:layout_marginRight="5dp"/>
+
+            <!--    android:src="@mipmap/thumbup_icon" -->
+
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:id="@+id/plant_card_view_plant_info"
+                android:background="@android:color/holo_green_light"
+                android:contentDescription="@string/ImgDesc"
+                android:scaleType="fitCenter"
+                android:layout_toStartOf="@+id/plant_card_view_thumb_up"
+                android:layout_marginRight="15dp"/>
+            <!--
+                android:src="@mipmap/plant_card_view_plant_info"-->
+
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:id="@+id/plant_card_view_user_info"
+                android:background="@android:color/holo_orange_dark"
+                android:contentDescription="@string/ImgDesc"
+                android:scaleType="fitCenter"
+                android:layout_toStartOf="@+id/plant_card_view_plant_info"
+                android:layout_marginRight="10dp"/>
+            <!--
+                android:src="@mipmap/plant_card_view_user_info_icon"-->
+
+        </RelativeLayout>
+
+
+    </FrameLayout>
+
+</android.support.v7.widget.CardView>

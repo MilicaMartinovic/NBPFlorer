@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.milica.nbp_florer.LoginActivity">
+
+    <EditText
+        android:id="@+id/etxtUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="115dp"
+        android:ems="12"
+        android:hint="@string/username_hint"
+        android:inputType="textPersonName"
+        android:textColor="@color/colorPrimary"
+        android:layout_centerHorizontal="true"
+        android:textColorHint="@color/colorPrimary" />
+      <!--  android:theme="@style/EditTextTheme"/> -->
+
+    <EditText
+        android:id="@+id/etxtPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etxtUsername"
+        android:layout_marginTop="15dp"
+        android:ems="12"
+        android:inputType="textPassword"
+        android:hint="@string/password_hint"
+        android:textColorHint="@color/colorPrimary"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary" />
+      <!--  android:theme="@style/EditTextTheme"/> -->
+
+    <TextView
+        android:id="@+id/txtCreateAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_account"
+        android:textStyle="bold|italic"
+        android:textColor="@color/colorTextGray"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/etxtPassword"
+        android:layout_marginTop="15dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_above="@+id/btnLogin"/>
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:onClick="onLogin"
+        android:text="@string/btnLogin"
+        android:textColor="@color/colorPrimary"
+        android:background="@android:color/transparent"/>
+</RelativeLayout>
