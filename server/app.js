@@ -40,23 +40,6 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-/*async function createUser() {
-	const user = new User({
-		username: 'rista',
-		password: 'glista',
-		fullname: 'Nikola Ristic',
-		email: 'rista@gmail.com',
-		lokacija_slike: 'lokacija',
-		motherland: 'Srbija',
-		bio: 'student, zna da vozi kola',
-		biljke: [ '5c4097d539fe6d0a28204171' ]
-	});
-
-	const result = await user.save();
-	console.log(result);
-}
-
-createUser();*/
 
 async function getUser(uname, passw) {
 	const user = await User.findOne({ username: uname, password: passw });
@@ -102,32 +85,13 @@ const Plant = mongoose.model('Plant', plantSchema);
 
 	const result = await plant.save();
 	console.log(result);
-}
-
-createPlant();*/
+}*/
 
 async function getPlants() {
 	const plants = await Plant.find().sort({datum_dodavanja: -1});//datum dodavanja desc
 
 	return plants;
 }
-
-/*async function getPlant(lat_naziv) {
-	const plant = await Plant.findOne({ latinski_naziv: lat_naziv })
-		.populate('slike');
-
-	console.log(plant);
-}
-
-getPlant('maslacak lat');*/
-
-/*async function getUser(uname) {
-	const user = await User.findOne({ username: uname });
-
-	return user;
-}
-
-//getUser('comi', 'comi');*/
 
 //-----------------------------------------------------------------------------------------
 
@@ -143,48 +107,21 @@ const pictureSchema = new mongoose.Schema({
 
 const Picture = mongoose.model('Picture', pictureSchema);
 
+//-----------------------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------------------COMMENTS
+
 const commentSchema = new mongoose.Schema({
 	komentar: String,
 	datum_dodavanja: String,
 	parent: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' },
 	username: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-	plant: { type: mongoose.Schema.Types.ObjectId, ref: 'Plant' }
+	plant: { type: mongoose.Schema.Types.ObjectId, ref: 'Plant' },
+	children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
 });
 
 const Comment = mongoose.model('Comment', commentSchema);
 
-async function createComment() {
-	const comm = new Comment( {
-		komentar: "Dobra biljka",
-		datum_dodavanja: "5.6.1996",
-		parent: null,
-		username: null,
-		plant: null
-	})
-	const result = await comm.save();
-}
-
-createComment();
-/*async function createPicture() {
-	const picture = new Picture({
-		lokacija_slike: 'asd/mul.jpg',
-		longitude: '58',
-		latitude: '43'
-	});
-
-	const result = await picture.save();
-	console.log(result);
-}
-
-createPicture();
-
-async function getPicture() {
-	const pictures = await User.find();
-
-	return pictures;
-}
-
-//getPictures();*/
 
 //-----------------------------------------------------------------------------------------
 
@@ -331,7 +268,43 @@ app.post('/plantTags', (req, res) => {
 })
 
 app.post('/comments', (req, res) => {
+	Comment.find()
+		.populate('children')
+		.sort({datum_dodavanja: -1})
+			.then(result => res.send(result));
+})
 
+app.post('/addComment', (req, res) => {
+	let parent = req.body.parent;
+	let comment = req.body.comment;
+	let id_plant = req.body.id_biljke;
+	let id_user = req.body.id_user;
+	insertComment(comment, id_plant, id_user, parent)
+		.then(comm_id => {
+			if(parent!=null) {
+				Comment.findById(parent)
+					.then(async par => {
+						par.children.push(comm_id);
+						let r = await par.save();
+						Plant.findById(id_plant)
+						.then(async plant => {
+							plant.comments.push(comm_id);
+							let r = await plant.save();
+							
+							User.findById(id_user)
+							.then(async user => {
+								user.comments.push(comm_id);
+								let r = await user.save();
+								res.send({message: "OK"});
+							})
+							.catch(err => res.send({message:err}))
+						})
+						.catch(err => res.send({message:err}))
+					})
+					.catch(err => res.send({message: err}))
+			}
+		})
+		.catch(err => res.send({message: err}))
 })
 
 app.post('/deleteTag', (req, res) => {
@@ -381,6 +354,19 @@ app.post('/addSuggestion', (req, res) => {
 	.catch(err => { res.send({message: err})})
 })
 
+async function insertComment(comment, plant, user, parent) {
+	return new Promise((resolve, reject) => {
+		const comm = new Comment({
+			komentar: comment,
+			datum_dodavanja: new Date().getTime().toString(),
+			parent: parent,
+			username: user,
+			plant: plant
+		})
+		comm.save().then(result => resolve(result._id))
+	})
+}
+
 async function findWithLatinName(latinName) {
 	return new Promise((resolve, reject) => {
 		Plant.findOne({ latinski_naziv: latinName}, function(err, plant) {
@@ -409,7 +395,7 @@ async function insertPicture(lokacija, lon, lat, biljka) {
 			longitude: lon,
 			latitude: lat,
 			biljka: biljka,
-			datum_dodavanja: new Date().getTime().toString()
+			datum_dodavanja: new Date().getTime().toString(),
 		})
 		picture.save().then(res => {
 			resolve(res._id);
