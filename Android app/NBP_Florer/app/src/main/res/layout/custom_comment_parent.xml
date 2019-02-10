@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/comment_card_view"
+    app:cardBackgroundColor="@color/cardview_light_background">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="75dp"
+            android:id="@+id/comment_profile_pic"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:textStyle="bold|italic"
+                android:id="@+id/txtCommentUsername"
+                android:text="Comi"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txtComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="5dp"
+                    android:text="neki komentar, super biljka wow" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:id="@+id/etComment"
+                    android:visibility="gone"
+                    android:hint="@string/leave_a_comment"/>
+
+            </RelativeLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:id="@+id/txtCommentDate"
+                    android:text="4.6.2014"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <!--<TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_alignParentEnd="true"
+                        android:text="@string/upvote"
+                        android:layout_toLeftOf="@+id/txtNumOfUpvotes"
+                        android:id="@+id/txtUpvote"/>-->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:layout_alignParentEnd="true"
+                        android:text="2000"
+                        android:layout_marginLeft="8dp"
+                        android:id="@+id/txtNumOfUpvotes"/>
+
+                    <ImageButton
+                        android:id="@+id/btnUpvote"
+                        android:layout_width="15dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_toStartOf="@+id/txtNumOfUpvotes"
+                        android:contentDescription="@string/todo"
+
+                        android:src="@mipmap/ic_upvote_foreground"/>
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="15dp"
+                        android:id="@+id/btnReply"
+                        android:layout_toStartOf="@+id/btnUpvote"
+                        android:contentDescription="@string/todo" />
+
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary">
+
+            </View>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

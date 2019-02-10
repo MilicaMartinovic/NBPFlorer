@@ -167,5 +167,32 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- ovde samo znaci picutre pa editbox pa dugme send-->
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="75dp"
+                android:id="@+id/imgLeaveCommentPicture"/>
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/etLeaveComment" />
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/btnLeaveComment"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_view_comment">
+
+        </android.support.v7.widget.RecyclerView>
+
     </LinearLayout>
 </ScrollView>

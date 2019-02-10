@@ -35,7 +35,8 @@ const userSchema = new mongoose.Schema({
 	motherland: String,
 	bio: String,
 	slike_biljaka: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Picture' } ],
-	comments: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}
+	comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}],
+	upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}]
 });
 
 const User = mongoose.model('User', userSchema);
@@ -49,7 +50,7 @@ async function getUser(uname, passw) {
 
 async function getUser(uname) {
 	const user = await User.findOne({ username: uname })
-	.populate('slike_biljaka');
+	.populate('slike_biljaka').populate('comments');
 
 	return user;
 }
@@ -68,7 +69,7 @@ const plantSchema = new mongoose.Schema({
 	slike: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Picture' } ],
 	datum_dodavanja: String,
 	name_suggestions: [String],
-	comments: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }
+	comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment', default:null }]
 });
 
 const Plant = mongoose.model('Plant', plantSchema);
@@ -114,10 +115,10 @@ const Picture = mongoose.model('Picture', pictureSchema);
 const commentSchema = new mongoose.Schema({
 	komentar: String,
 	datum_dodavanja: String,
-	parent: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' },
-	username: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+	username: String,
 	plant: { type: mongoose.Schema.Types.ObjectId, ref: 'Plant' },
-	children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
+	children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}],
+	numOfUpvotes: Number
 });
 
 const Comment = mongoose.model('Comment', commentSchema);
@@ -149,10 +150,8 @@ app.post('/login', (req, res) => {
 
 app.post('/account', (req, res) => {
 	let username = req.body.username;
-	//console.log(username);
 
 	getUser(username).then(user => {
-	//	console.log(user);
 
 		if(user != null) {
 			res.send(user);
@@ -268,43 +267,101 @@ app.post('/plantTags', (req, res) => {
 })
 
 app.post('/comments', (req, res) => {
-	Comment.find()
-		.populate('children')
-		.sort({datum_dodavanja: -1})
-			.then(result => res.send(result));
-})
+	let id_plant = req.body.id_plant;
+	let childs = [];
+	let comments = [];
+	let promisesChildren = [];
+	let promises = [];
+	Plant.findById(id_plant)
+		.populate('comments')
+		.then(plant => {
+			plant.comments.forEach(comment => {
+				promises.push(
+				comment.children.forEach(child => {
+					promisesChildren.push(
+					Comment.findById(child)
+						.then(c => {
+							childs.push(c);
+						})
+					)
+				})
+				,Promise.all(promisesChildren).then(() => {				
+					let comm = {
+						comment: comment,
+						children: childs
+					}
+					comments.push(comm);
+					childs = [];
+				}))			
+			})
+			Promise.all(promises)
+			.then(() => {
+				res.send(comments)	
+			})
+		})
+	})
 
 app.post('/addComment', (req, res) => {
 	let parent = req.body.parent;
 	let comment = req.body.comment;
-	let id_plant = req.body.id_biljke;
-	let id_user = req.body.id_user;
-	insertComment(comment, id_plant, id_user, parent)
+	let id_plant = req.body.plant_id;
+	let username = req.body.username;
+	if(parent) {
+		insertComment(comment, id_plant, username, parent)
 		.then(comm_id => {
-			if(parent!=null) {
-				Comment.findById(parent)
-					.then(async par => {
-						par.children.push(comm_id);
-						let r = await par.save();
-						Plant.findById(id_plant)
-						.then(async plant => {
-							plant.comments.push(comm_id);
-							let r = await plant.save();
-							
-							User.findById(id_user)
-							.then(async user => {
-								user.comments.push(comm_id);
-								let r = await user.save();
-								res.send({message: "OK"});
+					User.findOne({username: username})
+					.then( user => {
+						user.comments.push(comm_id);
+						user.save().then(() => {
+							Comment.findById(parent)
+								.then(par => {
+									par.children.push(comm_id);
+									par.save().then(() => res.send({message: "OK"}));
+								})
+								.catch(err => res.send({message: err, m: "ovde1"}))
 							})
-							.catch(err => res.send({message:err}))
 						})
-						.catch(err => res.send({message:err}))
 					})
-					.catch(err => res.send({message: err}))
-			}
+					.catch(err => res.send({message:err, m: "ovde3"}))
+	}
+	else {
+		insertComment(comment, id_plant, username, parent)
+			.then(comm_id => {
+				Plant.findById(id_plant).then(plant => {
+					plant.comments.push(comm_id);
+					plant.save()
+						.then(() => {
+							User.findOne({username: username})
+							.then(user => {
+								user.comments.push(comm_id);
+								user.save().then(() => {
+									res.send({message: "OK"})
+								})
+							})
+						})
+				})
+			})
+	}
+})
+
+app.post('/upvote', (req, res) => {
+	let username = req.body.username;
+	let comm_id = req.body.comm_id;
+	Comment.findById(comm_id).then(comm => {
+		comm.numOfUpvotes++;
+		comm.save().then((r) => {
+			User.findOne({username: username})
+				.then(user => {
+					user.upvotes.push(comm_id);
+					user.save().then(() => res.send(user))
+				}) 
 		})
-		.catch(err => res.send({message: err}))
+	})
+})
+
+app.post('/upvotes', (req, res) => {
+	let username = req.body.username;
+	User.findOne({username: username}).populate('upvotes').then(user => res.send(user))
 })
 
 app.post('/deleteTag', (req, res) => {
@@ -316,7 +373,6 @@ app.post('/deleteTag', (req, res) => {
 			plant.update({$pullAll: {tags: [tag]}}).then(plant => {
 				res.send(plant)
 			})
-			
 		})
 })
 
@@ -354,14 +410,16 @@ app.post('/addSuggestion', (req, res) => {
 	.catch(err => { res.send({message: err})})
 })
 
-async function insertComment(comment, plant, user, parent) {
+async function insertComment(comment, plant, username, parent) {
+	
 	return new Promise((resolve, reject) => {
 		const comm = new Comment({
 			komentar: comment,
 			datum_dodavanja: new Date().getTime().toString(),
-			parent: parent,
-			username: user,
-			plant: plant
+			username: username,
+			children: new Array(),
+			plant: plant,
+			numOfUpvotes: 0
 		})
 		comm.save().then(result => resolve(result._id))
 	})
@@ -422,6 +480,7 @@ async function insertPlant(name, username, lokacija, tags, slika) {
 	return new Promise((resolve, reject) => {
 		let arr = [];
 		arr.push(slika);
+		let arr1 = [];
 		const plant = new Plant({
 			latinski_naziv: name,
 			username: username,
@@ -429,11 +488,13 @@ async function insertPlant(name, username, lokacija, tags, slika) {
 			tags: tags,
 			slike: arr,
 			datum_dodavanja : new Date().getTime().toString(),
-			name_suggestions: new Array()
+			name_suggestions: new Array(),
+			comments: new Array()
 		});
 		plant.save().then(result => {
 			resolve(result._id)
 		})
+		.catch(err => console.log("error!!!!!!!!", err))
 	})
 }
 

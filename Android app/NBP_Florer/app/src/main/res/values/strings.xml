@@ -66,4 +66,8 @@
     <string name="plant_name">plant name</string>
 
     <string name="made_by">by BiTS</string>
+    <string name="todo">TODO</string>
+    <string name="upvote">upvote</string>
+    <string name="_2">2</string>
+    <string name="leave_a_comment">Leave a comment</string>
 </resources>

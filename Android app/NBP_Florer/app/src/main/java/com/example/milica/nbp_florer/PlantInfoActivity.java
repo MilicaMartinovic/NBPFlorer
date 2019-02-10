@@ -3,14 +3,18 @@ package com.example.milica.nbp_florer;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.icu.text.UnicodeSetSpanner;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,19 +29,28 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.milica.nbp_florer.Comments.ChildComment;
+import com.example.milica.nbp_florer.Comments.ParentComment;
+import com.example.milica.nbp_florer.Comments.ParentCommentAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
-public class PlantInfoActivity extends AppCompatActivity {
+public class PlantInfoActivity extends AppCompatActivity implements CustomReplyDialog.CustomReplyDialogListener{
 
     private ImageView plant_image_full;
     private TextView etxtLatin;
@@ -50,12 +63,16 @@ public class PlantInfoActivity extends AppCompatActivity {
     private StringRequest stringRequestDelete;
     private StringRequest stringRequestImages;
     private StringRequest stringRequestTags;
+    private StringRequest stringRequestComments;
+    private StringRequest stringRequestAddCommen;
     private String mPlantLocationsURL = Constants.serverUrl + "/plantLocations";
     private String mPlantImagesURL = Constants.serverUrl + "/plantImages";
     private String mPlantTagsURL = Constants.serverUrl + "/plantTags";
     private String deleteTagForPlantURL = Constants.serverUrl + "/deleteTag";
     private String addTagForPlant = Constants.serverUrl + "/addTag";
     private String addSuggestionForPlant = Constants.serverUrl + "/addSuggestion";
+    private String mComments = Constants.serverUrl + "/comments";
+    private String mAddComment = Constants.serverUrl + "/addComment";
     private String latitude, longitude;
     private String id_biljke;
     private PlantLocationList locationList;
@@ -67,6 +84,17 @@ public class PlantInfoActivity extends AppCompatActivity {
     private RelativeLayout suggestionsLayout;
     private ImageButton btnWiki;
     private EditText etPlantName;
+    private ImageView imgLeaveComment;
+    private EditText etLeaveComment;
+    private Button btnLeaveComment;
+    private String sendReply = Constants.serverUrl + "/addComment";
+    private StringRequest stringRequestAddComment;
+
+    //-----------------------
+    private RecyclerView recyclerView;
+    private ParentCommentAdapter parentCommentAdapter;
+    private List<ParentComment> parentCommentList;
+    //-----------------------
 
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private static final String TAG = "MainActivity";
@@ -90,11 +118,26 @@ public class PlantInfoActivity extends AppCompatActivity {
         etPlantName.setVisibility(View.INVISIBLE);
         btnWiki = findViewById(R.id.btnWiki);
         session = new Session(this);
+        btnLeaveComment = findViewById(R.id.btnLeaveComment);
+        etLeaveComment = findViewById(R.id.etLeaveComment);
+        imgLeaveComment = findViewById(R.id.imgLeaveCommentPicture);
+
         getIncomingIntent();
+
+        //------------------------------------------
+        recyclerView = findViewById(R.id.recycler_view_comment);
+
+        parentCommentList = new ArrayList<>();
+
+
+        getComments(id_biljke);
+        //-------------------------------------------
 
         getPlant_images(id_biljke);
 
         getPlant_tags(id_biljke);
+
+        SetupLeaveComment();
 
         btnWiki.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,6 +206,122 @@ public class PlantInfoActivity extends AppCompatActivity {
 
     }
 
+    public String EpochSecondsToDate(long milis) {
+        Date date = new Date(milis);
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM d,yyyy h:mm,a", Locale.ENGLISH);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formattedDate = sdf.format(date);
+        return formattedDate;
+    }
+
+    private void getComments(final String id_biljke) {
+        stringRequestComments = new StringRequest(Request.Method.POST, mComments, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+
+                try {
+                    JSONArray array = new JSONArray(response);
+                    for(int i = 0; i<array.length(); i++) {
+                        JSONObject obj = (JSONObject) array.get(i);
+                        JSONObject comment = obj.getJSONObject("comment");
+                        JSONArray children = obj.getJSONArray("children");
+                        List<ChildComment> childComments = new ArrayList<>();
+                        for(int j = 0; j<children.length(); j++)
+                        {
+                            JSONObject child = (JSONObject) children.get(j);
+                            String date = EpochSecondsToDate(Long.parseLong(child.getString("datum_dodavanja")));
+                            childComments.add(new ChildComment(child.getString("komentar"),
+                                                                date,
+                                                                child.getString("username"),
+                                                                getApplicationContext()));
+                            childComments.get(j).setUsernameImage("https://cdn1.vectorstock.com/i/1000x1000/25/70/user-icon-woman-profile-human-avatar-vector-10552570.jpg");
+                            childComments.get(j).setNumOfUpvotes(child.getInt("numOfUpvotes"));
+                            childComments.get(j).set_id(child.getString("_id"));
+                        }
+                        parentCommentList.add(new ParentComment("", childComments, getApplicationContext()));
+                        parentCommentList.get(i).setKomentar(comment.getString("komentar"));
+                        String date = EpochSecondsToDate(Long.parseLong(comment.getString("datum_dodavanja")));
+                        parentCommentList.get(i).setDatum(date);
+                        parentCommentList.get(i).setUsername(comment.getString("username"));
+                        parentCommentList.get(i).setUrlSlike("https://cdn1.vectorstock.com/i/1000x1000/25/70/user-icon-woman-profile-human-avatar-vector-10552570.jpg");
+                        parentCommentList.get(i).setBrojUpvote(comment.getInt("numOfUpvotes"));
+                        parentCommentList.get(i).set_id(comment.getString("_id"));
+                        parentCommentList.get(i).setPlant_id(id_biljke);
+                    }
+                    parentCommentAdapter = new ParentCommentAdapter(parentCommentList);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(PlantInfoActivity.this));
+                    recyclerView.setAdapter(parentCommentAdapter);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("id_plant", id_biljke);
+
+                return hashMap;
+            }
+        };
+        RequestSingleton.getInstance(PlantInfoActivity.this).addToRequestQueue(stringRequestComments);
+
+    }
+
+    public void SetupLeaveComment() {
+        btnLeaveComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SendComment(etLeaveComment.getText().toString());
+            }
+        });
+    }
+
+    public void SendComment(final String comment) {
+        stringRequestAddCommen = new StringRequest(Request.Method.POST, mAddComment, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getApplicationContext(), "Successfully added", Toast.LENGTH_SHORT).show();
+                parentCommentList.add(new ParentComment("",null,getApplicationContext()));
+                parentCommentList.get(parentCommentList.size() - 1).setUsername(session.getUsername());
+                parentCommentList.get(parentCommentList.size() - 1).setBrojUpvote(0);
+                parentCommentList.get(parentCommentList.size() - 1).setDatum(new Date().toString());
+                parentCommentList.get(parentCommentList.size() - 1).setKomentar(comment);
+
+                parentCommentAdapter = new ParentCommentAdapter(parentCommentList);
+                recyclerView.setLayoutManager(new LinearLayoutManager(PlantInfoActivity.this));
+                recyclerView.setAdapter(parentCommentAdapter);
+
+                etLeaveComment.setText("");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Toast.makeText(getApplicationContext(), "Something happened, try again", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("plant_id", id_biljke);
+                hashMap.put("username", session.getUsername());
+                hashMap.put("comment", comment);
+                hashMap.put("parent", "");
+                return hashMap;
+            }
+        };
+        RequestSingleton.getInstance(PlantInfoActivity.this).addToRequestQueue(stringRequestAddCommen);
+    }
     public void getPlant_images(final String id_plant) {
 
         stringRequestImages = new StringRequest(Request.Method.POST, mPlantImagesURL, new Response.Listener<String>() {
@@ -590,5 +749,35 @@ public class PlantInfoActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void applyResult(final String comment, final String comm_id) {
+        Toast.makeText(getApplicationContext(), "ovde uslo plant ingfo", Toast.LENGTH_SHORT).show();
+        stringRequestAddComment = new StringRequest(Request.Method.POST, sendReply, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getApplicationContext(), "Successfully replied", Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Something happened, try again", Toast.LENGTH_SHORT).show();
+
+            }
+        })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("username", session.getUsername());
+                hashMap.put("comment", comment);
+                hashMap.put("parent", comm_id);
+                hashMap.put("plant_id", id_biljke);
+                return hashMap;
+            }
+        };
+        RequestSingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequestAddComment);
     }
 }

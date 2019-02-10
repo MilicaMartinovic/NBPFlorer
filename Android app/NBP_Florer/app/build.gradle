@@ -44,4 +44,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    compile 'com.thoughtbot:expandablerecyclerview:1.3'
 }
